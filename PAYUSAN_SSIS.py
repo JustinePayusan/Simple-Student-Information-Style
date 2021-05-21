@@ -18,8 +18,7 @@ def Main():
     print("5. SEARCH STUDENT")
     print("6. EXIT")
     print()
-    
-    
+       
 def ViewStud():
     global studAttributes 
     global studDatabase
@@ -40,7 +39,6 @@ def ViewStud():
             print()        
     input("Press any key to continue:")
     
-
 def AddStud():
     print("_____________________")
     print("    ADD STUDENT      ")
@@ -58,7 +56,7 @@ def AddStud():
         writer = csv.writer(f)
         writer.writerows([studData])
     
-    print("Wow! Data added successfully!")
+    print("Data added successfully!")
     input("Press any key to continue:")
     return
 
@@ -97,12 +95,10 @@ def EditStud():
             writer.writerows(EditData)
     
     else:
-        print("Sorry! ID Number could not be found\n")
+        print("ID Number could not be found\n")
        
     input("Press any key to continue:")
-    
-    
-    
+     
 def DeleteStud():
     global studAttributes 
     global studDatabase
@@ -129,10 +125,10 @@ def DeleteStud():
         with open(studDatabase, "w", encoding = "utf-8") as f:
             writer = csv.writer(f)
             writer.writerows(EditData)
-        print("ID Number:\n ", studID, "Removed successfully!")
+        print("ID Number:\n ", studID, "was removed successfully!")
     
     else:
-        print("Oops! ID Number could not be found")
+        print("ID Number could not be found")
     
     input("Press any key to continue:")
     
@@ -159,7 +155,7 @@ def SearchStud():
                     break
         
         else:
-            print("Oops! This Student does not exist!")
+            print("This Student does not exist!")
     input("Press any key to continue:")
     
 
