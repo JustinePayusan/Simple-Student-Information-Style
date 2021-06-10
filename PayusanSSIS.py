@@ -1,301 +1,284 @@
-from tkinter import*
+from tkinter import *
 from tkinter import ttk
 import tkinter.ttk as ttk
 import tkinter.messagebox
-import os
+import os 
 import csv
 
-class StudentInformationSystem:
-    def __init__(self,root):
-        self.root=root
-        self.root.title("Student Information System")
-        self.root.geometry("1350x700+0+0")
-        self.root.configure(bg="#FFC0CB")
+class Student:
+    
+    def __init__ (self,root):
+        self.root = root
+        self.root.title("STUDENT INFORMATION SYSTEM")
+        self.root.geometry("1350x750+0+0")
+        self.root.config(bg="#FFC0CB")
         self.root.resizable(False,False)
-        self.data=dict()
-        self.temp=dict()
-        self.filename="StudentData.csv"
-
-        StudentID= StringVar()
-        Surname = StringVar()
-        Firstname = StringVar()
-        Middlename = StringVar()
+        self.data = dict()
+        self.temp = dict()
+        self.filename = "StudentData.csv"
+        
+        FirstName = StringVar()
+        MiddleName = StringVar()
+        LastName = StringVar()
+        StudID = StringVar()
+        YearLevel = StringVar()
         Gender = StringVar()
-        Yearlevel = StringVar()
         Course = StringVar()
-        Searchbar=StringVar()
+        Searchbar = StringVar()
         
-
-        title=Label(self.root, text = "MSU-IIT STUDENT INFORMATION SYSTEM",bd=4,relief=RIDGE, font=("Palatino Linotype",40,"bold"),bg="#f25278", fg="white")
-        title.pack(side=TOP, fill=X)
-        
-        if not os.path.exists(self.filename):
-            with open('StudentData.csv',mode = 'w') as csv_file:
-                fieldnames = ["StudentID", "Surname", "Firstname", "Middlename", "Gender", "Course", "Yearlevel"]
-                writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
+        if not os.path.exists('StudentData.csv'):
+            with open('StudentData.csv', mode='w') as csv_file:
+                fieldnames = ["Student ID", "Last Name", "First Name", "Middle Name","Gender", "Year Level", "Course"]
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
+        
         else:
             with open('StudentData.csv', newline='') as csv_file:
                 reader = csv.DictReader(csv_file)
                 for row in reader:
-                    self.data[row["StudentID"]] = {'Surname': row["Surname"], 'Firstname': row["Firstname"], 'Middlename': row["Middlename"],'Gender': row["Gender"], 'Course': row["Course"],'Yearlevel': row["Yearlevel"] }
+                    self.data[row["Student ID"]] = {'Last Name': row["Last Name"], 'First Name': row["First Name"], 'Middle Name': row["Middle Name"], 'Gender': row["Gender"],'Year Level': row["Year Level"], 'Course': row["Course"]}
             self.temp = self.data.copy()
-            
-
-        #======Functions========
-
+        
+        
+         
+        #=============================================================FUNCTIONS================================================================#
+        
         def iExit():
-            iExit = tkinter.messagebox.askyesno("Student Information System","Do you want to exit?")
+            iExit = tkinter.messagebox.askyesno("SIS","Confirm to EXIT")
             if iExit > 0:
                 root.destroy()
                 return
             
-        
-        def addData():
-            with open('Studentdata.csv', "a", newline="") as file:
+        def addStd():
+            with open('StudentData.csv', "a", newline="") as file:
                 csvfile = csv.writer(file)
-                if StudentID.get()=="" or Surname.get()=="" or Firstname.get()=="" or  Yearlevel.get()=="":
-                    tkinter.messagebox.showinfo("Student Information System","Please fill in the box.")
+                if StudID.get()=="" or FirstName.get()=="" or MiddleName.get()=="" or LastName.get()=="" or YearLevel.get()=="":
+                    tkinter.messagebox.showinfo("SIS","Please fill in the box.")
                 else:
-                    ID = StudentID.get()
-                    ID_list = []
-                    for i in ID:
-                        ID_list.append(i)
-                    if "-" in ID_list:
-                        x = ID.split("-")
-                        y = x[0]
-                        n = x[1]
-                        if y.isdigit()==False or n.isdigit()==False:
-                            try:
-                                tkinter.messagebox.showerror("Student Information System", "INVALID ID Number")
-                            except:
-                                pass
-                        elif y==" " or n==" ":
-                            try:
-                                tkinter.messagebox.showerror("Student Information System", "INVALID ID Number")
-                            except:
-                                pass
-                        else:
-                            if ID in self.data:
-                                tkinter.messagebox.showinfo("Student Information System","StudentID already exist")
-                            else:
-                                self.data[StudentID.get()] = { 'Surname': Surname.get(), 'Firstname': Firstname.get(), 'Middlename': Middlename.get(), 'Gender': Gender.get(), 'Course': Course.get(),'Yearlevel': Yearlevel.get() }
-                                self.saveData()
-                                tkinter.messagebox.showinfo("Student Information System", "Student Information: Recorded Successfully")
-                                Clear()
-                    else:
-                        tkinter.messagebox.showerror("Student Information System", "INVALID ID Number")      
-                displayData()
-
-    
-        def Clear():
-            StudentID.set("")
-            Surname.set("")
-            Firstname.set("")
-            Midname.set("")
+                    self.data[StudID.get()] = {'Last Name': LastName.get(), 'First Name': FirstName.get(), 'Middle Name': MiddleName.get(), 'Gender': Gender.get(),'Year Level': YearLevel.get(), 'Course': Course.get()}
+                    self.saveData()
+                    tkinter.messagebox.showinfo("SIS", "Success!")
+                ClearStd()
+                DisplayStd()
+                    
+        def ClearStd():
+            StudID.set("")
+            FirstName.set("")
+            MiddleName.set("")
+            LastName.set("")
+            YearLevel.set("")
             Gender.set("")
-            Yearlevel.set("")
             Course.set("")
-
-        def displayData():
+        
+        def DisplayStd():
             tree.delete(*tree.get_children())
             with open('StudentData.csv') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
-                    StudentID=row['StudentID']
-                    Surname=row['Surname']
-                    Firstname=row['Firstname']
-                    Middlename=row['Middlename']
-                    Gender=row['Gender']
-                    Yearlevel=row['Yearlevel']
+                    IDNumber=row['Student ID']
+                    LastName=row['Last Name']
+                    FirstName=row['First Name']
+                    MiddleName=row['Middle Name']
+                    YearLevel=row['Year Level']
                     Course=row['Course']
-                    tree.insert("",0, values=(StudentID, Firstname, Middlename, Surname,Course, Yearlevel, Gender))
+                    Gender=row['Gender']
+                    tree.insert("",END, values=(IDNumber, LastName, FirstName, MiddleName, Gender, YearLevel, Course))
                     
-        def search():
-            if self.Search.get() in self.data:
-                vals = list(self.data[self.Search.get()].values())
-                tree.delete(*tree.get_children())
-                tree.insert("",0, values=(self.Search.get(), vals[0],vals[1],vals[2],vals[3],vals[4],vals[5]))
-            elif self.Search.get() == "":
-                displayData()
-            else:
-                tkinter.messagebox.showerror("Student Information System","Student's Information not found")
-                return
-
-        def delete():
+        def deleteStd():
             if tree.focus()=="":
-                tkinter.messagebox.showerror("Student Information System","Please select the studen's' information you want to delete")
+                tkinter.messagebox.showerror("SIS","Select a student")
                 return
             id_no = tree.item(tree.focus(),"values")[0]
             
             self.data.pop(id_no, None)
             self.saveData()
             tree.delete(tree.focus())
-            tkinter.messagebox.showinfo("Student Information System","Student's Information Deleted Successfully")
-            displayData()
-
-        def editData():
+            tkinter.messagebox.showinfo("SIS","Record Deleted!")
+            
+        def searchStd():
+            if self.Search.get() in self.data:
+                vals = list(self.data[self.Search.get()].values())
+                tree.delete(*tree.get_children())
+                tree.insert("",0, values=(self.Search.get(), vals[0],vals[1],vals[2],vals[3],vals[4],vals[5]))
+            elif self.Search.get() == "":
+                DisplayStd()
+            else:
+                tkinter.messagebox.showerror("SIS", "Student not found")
+                return
+        
+        def editStd():
             if tree.focus() == "":
-                tkinter.messagebox.showerror("Student Information System", "Please select the student's information you want to edit")
+                tkinter.messagebox.showerror("SIS", "Please elect a student")
                 return
             values = tree.item(tree.focus(), "values")
-            StudentID.set(values[0])
-            Surname.set(values[1])
-            Firstname.set(values[2])
-            Midname.set(values[3])
+            StudID.set(values[0])
+            LastName.set(values[1])
+            FirstName.set(values[2])
+            MiddleName.set(values[3])
             Gender.set(values[4])
-            Course.set(values[5])
-            Yearlevel.set(values[6])
-           
+            YearLevel.set(values[5])
+            Course.set(values[6])
        
-       
-        def updateData():
+        def updateStd():
             with open('StudentData.csv', "a", newline="") as file:
                 csvfile = csv.writer(file)
-                if StudentID.get()=="" or Firstname.get()=="" or Surname.get()=="" or Course.get()=="" or Yearlevel.get()=="":
-                    tkinter.messagebox.showinfo("Student Information System","Please select the student's information you want to update")
+                if StudID.get()=="" or FirstName.get()=="" or MiddleName.get()=="" or LastName.get()=="" or YearLevel.get()=="":
+                    tkinter.messagebox.showinfo("SIS","Please select a student")
                 else:
-                    self.data[StudentID.get()] = {'Surname': Surname.get(), 'Firstname': Firstname.get(), 'Middlename': Middlename.get(), 'Gender': Gender.get() , 'Course': Course.get(),'Yearlevel': Yearlevel.get()}
+                    self.data[StudID.get()] = {'Last Name': LastName.get(), 'First Name': FirstName.get(), 'Middle Name': MiddleName.get(), 'Gender': Gender.get(),'Year Level': YearLevel.get(), 'Course': Course.get()}
                     self.saveData()
-                    tkinter.messagebox.showinfo("Student Information System", "Successfully Updated")
-                Clear()
-                displayData()     
+                    tkinter.messagebox.showinfo("SIS", "Updated Successfully ")
+                ClearStd()
+                DisplayStd()     
+
+        #============================================================FRAMES=====================================================================#
+
+        ManageFrame=Frame(self.root, bd=5, relief =RIDGE,  bg="#FFC0CB")
+        ManageFrame.place(x=20, y=100,width=470, height=500)
+
+        title=Label(self.root, text = "MSU-IIT STUDENT INFORMATION SYSTEM",bd=4,relief=RIDGE, font=("Times new roman",40,"bold"),bg="#f25278", fg="white")
+        title.pack(side=TOP)
         
-            
-            
-                        
-         
-                
-        #-------------Frames---------#
-        ManageFrame=Frame(self.root, bd=4, relief =RIDGE, bg="#FFC0CB")
-        ManageFrame.place(x=20, y=100,width=450, height=560)
+        DetailFrame=Frame(self.root, bd=4, relief =RIDGE,  bg="#FFC0CB")
+        DetailFrame.place(x=510, y=100,width=830, height=500)
+
+        ButtonFrame=Frame(self.root, bd=4, bg="thistle1", relief = RIDGE)
+        ButtonFrame.place(x=260,y=620, width=880, height=90)
         
-        DetailFrame=Frame(self.root, bd=4, relief =RIDGE, bg="#FFC0CB")
-        DetailFrame.place(x=500, y=100,width=830, height=560)
+        #============================================================LABELS AND ENTRY WIDGETS====================================================#
 
-        ButtonFrame=Frame(ManageFrame, bd=4, relief=RIDGE, bg="#FFC0CB")
-        ButtonFrame.place(x=10,y=410, width=420, height=130)
-
-        #-------------Labels and Entry Widgets ---------#
-
-        title=Label(ManageFrame, text="STUDENT'S INFORMATION",bg="#FFC0CB", fg="Black", font=("Palatino Linotype",20,"bold"))
+        title=Label(ManageFrame, text="STUDENT'S INFORMATION",bg="#f25278", fg="white", font=("Times new roman",20,"bold"))
         title.grid(row=0, columnspan=2, pady=20)
         
-        self.lblStdID = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="ID Number:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblStdID.grid(row=1, column=0,padx=5,pady=5, sticky="w")
-        self.txtStdID = Entry(ManageFrame, font=("Palatino Linotype",13,"normal"),textvariable=StudentID, relief=GROOVE, width=31)
+        self.lblStdID = Label(ManageFrame, font=("Times new roman",15,"bold"),text="ID Number:", padx=2, pady=2, bg="#f25278", fg="white",  height=1, width=11)
+        self.lblStdID.grid(row=1, column=0,padx=5,pady=5)
+        self.txtStdID = Entry(ManageFrame, font=("Times new roman",15,"bold"),textvariable=StudID, relief=GROOVE, width=27)
         self.txtStdID.grid(row=1, column=1)
-        self.txtStdID.insert(0, "YYYY-NNNN")
-        self.txtStdID.grid(row=1, column=1)
+        self.txtStdID.place(x=150,y=85)
 
-        self.lblSurname = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="Surname:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblSurname.grid(row=2, column=0,padx=5,pady=5, sticky="w")
-        self.txtSurname = Entry(ManageFrame, font=("Palatino Linotype",13,"normal"),textvariable=Surname, relief=GROOVE,width=31)
-        self.txtSurname.grid(row=2, column=1)
-
-        self.lblFirstname = Label(ManageFrame,font=("Palatino Linotype",15,"bold"),text="First Name:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblFirstname.grid(row=3, column=0,padx=5,pady=5, sticky="w")
-        self.txtFirstname = Entry(ManageFrame, font=("Palatino Linotype",13,"normal"),textvariable=Firstname, relief=GROOVE,width=31)
-        self.txtFirstname.grid(row=3, column=1)
+        self.lblFirstname = Label(ManageFrame,font=("Times new roman",15,"bold"),text="Last Name:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
+        self.lblFirstname.grid(row=2, column=0,padx=5,pady=5, sticky="w")        
+        self.txtFirstname = Entry(ManageFrame, font=("Times new roman",15,"bold"),textvariable=LastName, relief=GROOVE,width=27)
+        self.txtFirstname.grid(row=2, column=1)
+        self.txtFirstname.place(x=150,y=127)
         
-        self.lblMiddlename = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="Middle Initial:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblMiddlename.grid(row=4, column=0,padx=5,pady=5, sticky="w")
-        self.txtMiddlename = Entry(ManageFrame, font=("Palatino Linotype",13,"normal"),textvariable=Middlename, relief=GROOVE,width=31)
-        self.txtMiddlename.grid(row=4, column=1)
+        self.lblMidname = Label(ManageFrame, font=("Times new roman",15,"bold"),text="First Name:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
+        self.lblMidname.grid(row=3, column=0,padx=5,pady=5, sticky="w")
+        self.txtMidname = Entry(ManageFrame, font=("Times new roman",15,"bold"),textvariable=FirstName, relief=GROOVE,width=27)
+        self.txtMidname.grid(row=3, column=1)
+        self.txtMidname.place(x=150,y=169)
 
-        self.lblGender = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="Gender:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblGender.grid(row=5, column=0,padx=5,pady=5, sticky="w")
-        self.comboGender=ttk.Combobox(ManageFrame,font=("Palatino Linotype",13,"normal"), state="readonly",width=29, textvariable=Gender)
-        self.comboGender['values']=("Male", "Female")
-        self.comboGender.grid(row=5,column=1)
+        self.lblSurname = Label(ManageFrame, font=("Times new roman",15,"bold"),text="Middle Initial:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
+        self.lblSurname.grid(row=4, column=0,padx=5,pady=5, sticky="w")
+        self.txtSurname = Entry(ManageFrame, font=("Times new roman",15,"bold"),textvariable=MiddleName, relief=GROOVE,width=27)
+        self.txtSurname.grid(row=4, column=1)
+        self.txtSurname.place(x=150,y=211)
 
-        self.lblYearlevel = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="Year Level:", padx=2, pady=2, bg="#f25278", fg="white")
-        self.lblYearlevel.grid(row=6, column=0,padx=5,pady=5, sticky="w")
-        self.comboYearlevel=ttk.Combobox(ManageFrame,font=("Palatino Linotype",13,"normal"), state="readonly",width=29, textvariable=Yearlevel)
+        self.lblYearlevel = Label(ManageFrame, font=("Times new roman",15,"bold"),text="Year Level:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
+        self.lblYearlevel.grid(row=5, column=0,padx=5,pady=5, sticky="w")
+        self.comboYearlevel=ttk.Combobox(ManageFrame,font=("Times new roman",15,"bold"), state="readonly",width=26, textvariable=YearLevel)
         self.comboYearlevel['values']=("First Year","Second Year", "Third Year", "Fourth Year", "Fifth Year")
-        self.comboYearlevel.grid(row=6,column=1)
+        self.comboYearlevel.grid(row=5,column=1)
+        self.comboYearlevel.place(x=150,y=253)
 
-        self.lblCourse = Label(ManageFrame, font=("Palatino Linotype",15,"bold"),text="Course:", padx=2, pady=2, bg="#f25278", fg="white")
+        self.lblGender = Label(ManageFrame, font=("Times new roman",15,"bold"),text="Gender:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
+        self.lblGender.grid(row=6, column=0,padx=5,pady=5, sticky="w")
+        self.comboGender=ttk.Combobox(ManageFrame,font=("Times new roman",15,"bold"), state="readonly",width=26, textvariable=Gender)
+        self.comboGender['values']=("Male","Female")
+        self.comboGender.grid(row=6,column=1)
+        self.comboGender.place(x=150,y=295)
+
+        self.lblCourse = Label(ManageFrame, font=("Times new roman",15,"bold"),text="Course:", padx=2, pady=2, bg="#f25278", fg="white", height=1, width=11)
         self.lblCourse.grid(row=7, column=0,padx=5,pady=5, sticky="w")
-        self.txtCourse = Entry(ManageFrame, font=("Palatino Linotype",13,"normal"),textvariable=Course, relief=GROOVE,width=31)
+        self.txtCourse = Entry(ManageFrame, font=("Times new roman",15,"bold"),textvariable=Course, relief=GROOVE,width=27)
         self.txtCourse.grid(row=7, column=1)
 
-        #-------------Button Widget---------#
+        #============================================================BUTTON WIDGET====================================================#
 
-        self.btnAddData = Button(ButtonFrame, text="Add", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4,command=addData)
+        self.btnAddData = Button(ButtonFrame,text="Add", font=("Times new roman",10,"bold"),bg="#f26b8a", fg="black", height=3, width=14, bd=5,command=addStd)
         self.btnAddData.grid(row=0, column=0, padx=15, pady=15)
+        self.btnAddData.place(x=20,y=10)
 
-        self.btnUpdateData = Button(ButtonFrame, text="Update", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4, command=updateData)
+        self.btnUpdateData = Button(ButtonFrame, text="Update", font=("Times new roman",10,"bold"),bg="#f26b8a", fg="black", height=3, width=14, bd=5, command=updateStd)
         self.btnUpdateData.grid(row=0, column=2, padx=15, pady=15)
+        self.btnUpdateData.place(x=200,y=10)
 
-        self.btnClearData = Button(ButtonFrame, text="Clear", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4,command=Clear)
+        self.btnClearData = Button(ButtonFrame, text="Clear", font=("Times new roman",10,"bold"),bg="#f26b8a", fg="black", height=3, width=14, bd=5,command=ClearStd)
         self.btnClearData.grid(row=1, column=0,padx=15, pady=15)
+        self.btnClearData.place(x=380,y=10)
 
-        self.btnExit = Button(ButtonFrame, text="Exit", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4, command=iExit)
-        self.btnExit.grid(row=1, column=1,padx=15, pady=15)
+        self.btnDeleteData = Button(ButtonFrame, text="Delete", font=("Times new roman",10,"bold"),bg="#f26b8a", fg="black", height=3, width=14, bd=5, command=deleteStd)
+        self.btnDeleteData.grid(row=1, column=1,padx=15, pady=15)
+        self.btnDeleteData.place(x=560,y=10)
 
-        self.btnDeleteData = Button(ButtonFrame, text="Delete", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4, command=delete)
-        self.btnDeleteData.grid(row=1, column=2,padx=15, pady=15)
+        self.btnExit = Button(ButtonFrame, text="Exit", font=("Times new roman",10,"bold"),bg="#f26b8a", fg="black", height=3, width=12, bd=4, command=iExit)
+        self.btnExit.grid(row=1, column=2,padx=15, pady=15)
+        self.btnExit.place(x=740,y=10)
 
-        #-------------Detail Frame ---------#
-        self.lblSearch = Label(DetailFrame, font=('Palatino Linotype',10,'bold'),text="Search (ID Number)", padx=2, pady=2, bg="#FFC0CB", fg="black")
-        self.lblSearch.grid(row=1, column=0,padx=5,pady=5, sticky="w")
-        self.Search = Entry(DetailFrame, font=('Palatino Linotype',10,'normal'),textvariable=Searchbar, relief=GROOVE,width=25)
-        self.Search.grid(row=1, column=1)
-
-        self.btnSearch = Button(DetailFrame, text="Search",font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4, command=search)
-        self.btnSearch.grid(row=1, column=2,padx=15, pady=15)
+        #============================================================DETAIL FRAME====================================================#
         
-        self.btnDisplayData = Button(DetailFrame, text="Select", font=("Palatino Linotype",10,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4,command=editData)
+        self.lblSearch = Label(DetailFrame, font=('Times new roman',15,'bold'),text="Search by ID:", padx=2, pady=2,bg="#FFC0CB", fg="black", height=1, width=12)
+        self.lblSearch.grid(row=1, column=0,padx=2,pady=2, sticky="w")
+        self.lblSearch.place(x=50,y=30)
+        
+        self.Search = Entry(DetailFrame, font=('Times new roman',15,'normal'),textvariable=Searchbar, relief=GROOVE, width=20, bg="#f26b8a", fg="black")
+        self.Search.grid(row=1, column=1)
+        self.Search.place(x=220,y=30)
+
+        self.btnSearch = Button(DetailFrame, text="Search",font=("Times new roman",12,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4, command=searchStd)
+        self.btnSearch.grid(row=1, column=2,padx=15, pady=15)
+        self.btnSearch.place(x=480,y=25)
+        
+        self.btnDisplayData = Button(DetailFrame, text="Select", font=("Times new roman",12,"bold"),bg="#f26b8a", fg="black", height=1, width=12, bd=4,command=editStd)
         self.btnDisplayData.grid(row=1, column=3, padx=15, pady=15)
+        self.btnDisplayData.place(x=650,y=25)
         
         TableFrame=Frame(DetailFrame, bd=4,relief=RIDGE,bg='#ecc19c')
-        TableFrame.place(x=10,y=80, width=790, height=450)
+        TableFrame.place(x=20,y=80, width=790, height=400)
 
         scroll_y=Scrollbar(TableFrame, orient=VERTICAL)
 
-        tree = ttk.Treeview(TableFrame, height=10, columns=("StudentID","Firstname","Middlename","Surname","Course","Yearlevel","Gender"), yscrollcommand=scroll_y.set)
+        tree = ttk.Treeview(TableFrame, height=10, columns=("StudID","LastName","FirstName","MiddleName","Gender","YearLevel","Course"), yscrollcommand=scroll_y.set)
+        
+        scroll_y.pack(side=LEFT, fill=Y)
 
-        scroll_y.pack(side=RIGHT, fill=Y)
-
-        tree.heading("StudentID", text="Student ID")
-        tree.heading("Surname", text="Surname")
-        tree.heading("Firstname", text="First Name")
-        tree.heading("Middlename", text="Middle Initial")
+        tree.heading("StudID", text="Student ID")
+        tree.heading("LastName", text="Last Name")
+        tree.heading("FirstName", text="First Name")
+        tree.heading("MiddleName", text="Middle Initial")
         tree.heading("Gender", text="Gender")
+        tree.heading("YearLevel", text="Year Level")
         tree.heading("Course", text="Course")
-        tree.heading("Yearlevel", text="Year Level")
         tree['show'] = 'headings'
 
-        tree.column("StudentID", width=70)
-        tree.column("Surname", width=100)
-        tree.column("Firstname", width=100)
-        tree.column("Middlename", width=70)
-        tree.column("Gender", width=70)
-        tree.column("Course", width=120)
-        tree.column("Yearlevel", width=70)
-        tree.pack(fill=BOTH,expand=1)
+        tree.column("StudID", width=110,anchor='center')
+        tree.column("LastName", width=110,anchor='center')
+        tree.column("FirstName", width=110,anchor='center')
+        tree.column("MiddleName", width=130,anchor='center')
+        tree.column("Gender", width=90,anchor='center')
+        tree.column("YearLevel", width=120,anchor='center')
+        tree.column("Course", width=100,anchor='center')
+        tree.pack(fill=BOTH,expand=1,anchor='center')
+        
+        DisplayStd()
 
-        displayData()
-
+        
+        #===========================================================================================================================================================#
     def saveData(self):
         temps = []
         with open('StudentData.csv', "w", newline ='') as update:
-            fieldnames = ["StudentID","Surname","Firstname","Middlename","Gender","Course","YearLevel"]
+            fieldnames = ["Student ID","Last Name","First Name","Middle Name","Gender","Year Level","Course"]
             writer = csv.DictWriter(update, fieldnames=fieldnames, lineterminator='\n')
             writer.writeheader()
             for id, val in self.data.items():
-                temp ={"StudentID": id}
+                temp ={"Student ID": id}
                 for key, value in val.items():
                     temp[key] = value
                 temps.append(temp)
             writer.writerows(temps)
+            
 
-        
-        
-
-
-if __name__=='__main__':
+if __name__ =='__main__':
     root = Tk()
-    application = StudentInformationSystem(root)
+    application = Student(root)
     root.mainloop()
